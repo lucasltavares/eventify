@@ -1,0 +1,21 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: eventify-app
+    restart: unless-stopped
+    ports:
+      - "3000:8000"
+    working_dir: /var/www/html
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - eventify-network
+
+networks:
+  eventify-network:
+    driver: bridge

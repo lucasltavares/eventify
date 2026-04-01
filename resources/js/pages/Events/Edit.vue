@@ -1,0 +1,108 @@
+<template>
+  <DashboardLayout title="Editar Evento">
+    <div class="max-w-2xl">
+      <div class="mb-6">
+        <Link :href="`/events/${event.id}`" class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
+          Voltar para evento
+        </Link>
+      </div>
+
+      <div class="card p-8">
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">Editar Evento</h1>
+
+        <form @submit.prevent="form.put(`/events/${event.id}`)" class="space-y-6">
+          <div>
+            <label class="label">Título do Evento *</label>
+            <input
+              v-model="form.title"
+              type="text"
+              class="input"
+              :class="{ 'input-error': form.errors.title }"
+              required
+            />
+            <p v-if="form.errors.title" class="mt-1 text-sm text-error-500">{{ form.errors.title }}</p>
+          </div>
+
+          <div>
+            <label class="label">Descrição</label>
+            <textarea
+              v-model="form.description"
+              class="input min-h-[120px]"
+              :class="{ 'input-error': form.errors.description }"
+            ></textarea>
+            <p v-if="form.errors.description" class="mt-1 text-sm text-error-500">{{ form.errors.description }}</p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="label">Data do Evento *</label>
+              <input
+                v-model="form.event_date"
+                type="date"
+                class="input"
+                :class="{ 'input-error': form.errors.event_date }"
+                required
+              />
+              <p v-if="form.errors.event_date" class="mt-1 text-sm text-error-500">{{ form.errors.event_date }}</p>
+            </div>
+
+            <div>
+              <label class="label">Horário</label>
+              <input
+                v-model="form.event_time"
+                type="time"
+                class="input"
+                :class="{ 'input-error': form.errors.event_time }"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="label">Local</label>
+            <input
+              v-model="form.location"
+              type="text"
+              class="input"
+              :class="{ 'input-error': form.errors.location }"
+            />
+          </div>
+
+          <div class="flex gap-4 pt-4">
+            <Link :href="`/events/${event.id}`" class="btn-secondary btn-lg">
+              Cancelar
+            </Link>
+            <button type="submit" class="btn-primary btn-lg flex-1" :disabled="form.processing">
+              <span v-if="form.processing" class="animate-spin">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+              </span>
+              <span v-else>Salvar Alterações</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </DashboardLayout>
+</template>
+
+<script setup>
+import { Link, useForm } from '@inertiajs/vue3';
+import DashboardLayout from '../../layouts/DashboardLayout.vue';
+
+const props = defineProps({
+  event: Object,
+});
+
+const form = useForm({
+  title: props.event.title,
+  description: props.event.description || '',
+  event_date: props.event.event_date,
+  event_time: props.event.event_time || '',
+  location: props.event.location || '',
+});
+</script>
