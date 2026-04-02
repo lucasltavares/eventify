@@ -17,10 +17,11 @@
       <div
         v-for="(event, index) in events.data"
         :key="event.id"
-        class="event-card animate-fade-in"
+        class="event-card animate-fade-in overflow-hidden"
         :style="{ animationDelay: `${index * 50}ms` }"
       >
-        <div class="flex items-start justify-between">
+        <div v-if="event.cover_image" class="h-32 -mx-4 -mt-4 mb-3 bg-cover bg-center" :style="{ backgroundImage: `url(/storage/${event.cover_image})` }"></div>
+        <div v-else class="flex items-start justify-between mb-4">
           <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-primary-100 to-pink-100 flex flex-col items-center justify-center">
             <span class="text-xs font-medium text-primary-600">{{ formatMonth(event.event_date) }}</span>
             <span class="text-xl font-bold text-primary-700">{{ formatDay(event.event_date) }}</span>

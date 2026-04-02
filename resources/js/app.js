@@ -1,7 +1,14 @@
 import { createApp, h } from 'vue';
-import { createInertiaApp } from '@inertiajs/vue3';
+import { createInertiaApp, router } from '@inertiajs/vue3';
+import axios from 'axios';
 import { ZiggyVue } from 'ziggy-js';
 import '../css/app.css';
+
+axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').content;
+
+router.on('start', () => {
+  axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]')?.content || '';
+});
 
 createInertiaApp({
   resolve: (name) => {

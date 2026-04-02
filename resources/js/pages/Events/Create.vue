@@ -1,12 +1,12 @@
 <template>
-  <DashboardLayout title="Criar Evento">
+  <DashboardLayout title="Criar Eventox">
     <div class="max-w-2xl">
       <div class="mb-6">
         <Link href="/events" class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
           </svg>
-          Voltar para eventos
+          Voltar para eventoss
         </Link>
       </div>
 
@@ -14,6 +14,37 @@
         <h1 class="text-2xl font-bold text-gray-900 mb-6">Criar Novo Evento</h1>
 
         <form @submit.prevent="form.post('/events')" class="space-y-6">
+          <div>
+            <label class="label">Banner do Evento</label>
+            <div class="mt-2">
+              <div v-if="!form.cover_image" class="flex items-center gap-4">
+                <input 
+                  id="file-upload" 
+                  name="cover_image" 
+                  type="file" 
+                  accept="image/*" 
+                  class="block w-full text-sm text-gray-500
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-full file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-primary-50 file:text-primary-700
+                    hover:file:bg-primary-100
+                    cursor-pointer"
+                  @change="handleFileChange" 
+                />
+              </div>
+              <div v-else class="relative inline-block">
+                <img :src="previewUrl" class="max-h-48 rounded-lg" />
+                <button type="button" @click="removeImage" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <p v-if="form.errors.cover_image" class="mt-1 text-sm text-error-500">{{ form.errors.cover_image }}</p>
+          </div>
+
           <div>
             <label class="label">Título do Evento *</label>
             <input
@@ -97,6 +128,7 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import { useForm } from '@inertiajs/vue3';
 import DashboardLayout from '../../layouts/DashboardLayout.vue';
@@ -107,7 +139,23 @@ const form = useForm({
   event_date: '',
   event_time: '',
   location: '',
+  cover_image: null,
 });
+
+const previewUrl = ref(null);
+
+const handleFileChange = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    form.cover_image = file;
+    previewUrl.value = URL.createObjectURL(file);
+  }
+};
+
+const removeImage = () => {
+  form.cover_image = null;
+  previewUrl.value = null;
+};
 
 const today = new Date().toISOString().split('T')[0];
 </script>

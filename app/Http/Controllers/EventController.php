@@ -38,7 +38,12 @@ class EventController extends Controller
             'event_date' => ['required', 'date', 'after_or_equal:today'],
             'event_time' => ['nullable', 'date_format:H:i'],
             'location' => ['nullable', 'string', 'max:255'],
+            'cover_image' => ['nullable', 'image', 'mimes:jpeg,png,gif', 'max:2048'],
         ]);
+
+        if ($request->hasFile('cover_image')) {
+            $validated['cover_image'] = $request->file('cover_image')->store('events/covers', 'public');
+        }
 
         $event = Auth::user()->events()->create($validated);
 
@@ -84,7 +89,23 @@ class EventController extends Controller
             'event_time' => ['nullable', 'date_format:H:i'],
             'location' => ['nullable', 'string', 'max:255'],
             'is_active' => ['boolean'],
+            'cover_image' => ['nullable', 'image', 'mimes:jpeg,png,gif', 'max:2048'],
+            'remove_cover_image' => ['boolean'],
         ]);
+
+        if ($request->boolean('remove_cover_image')) {
+            if ($event->cover_image) {
+                \Storage::disk('public')->delete($event->cover_image);
+            }
+            $validated['cover_image'] = null;
+        } elseif ($request->hasFile('cover_image')) {
+            if ($event->cover_image) {
+                \Storage::disk('public')->delete($event->cover_image);
+            }
+            $validated['cover_image'] = $request->file('cover_image')->store('events/covers', 'public');
+        }
+
+        unset($validated['remove_cover_image']);
 
         $event->update($validated);
 

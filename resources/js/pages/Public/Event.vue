@@ -18,9 +18,9 @@
       </div>
 
       <div class="card overflow-hidden shadow-xl animate-fade-in">
-        <div class="relative h-48 bg-gradient-to-br from-primary-500 via-pink-500 to-cyan-400">
+        <div class="relative h-48" :style="event.cover_image ? { backgroundImage: `url(/storage/${event.cover_image})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}" :class="event.cover_image ? '' : 'bg-gradient-to-br from-primary-500 via-pink-500 to-cyan-400'">
           <div class="absolute inset-0 bg-black/20"></div>
-          <div class="absolute inset-0 flex items-center justify-center">
+          <div class="absolute inset-0 flex items-center justify-center" v-if="!event.cover_image">
             <div class="text-center text-white">
               <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center">
                 <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
