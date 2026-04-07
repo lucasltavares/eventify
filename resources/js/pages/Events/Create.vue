@@ -13,7 +13,7 @@
       <div class="card p-8">
         <h1 class="text-2xl font-bold text-gray-900 mb-6">Criar Novo Evento</h1>
 
-        <form @submit.prevent="form.post('/events')" class="space-y-6">
+        <form @submit.prevent="form.post('/events', { forceFormData: true })" class="space-y-6">
           <div>
             <label class="label">Banner do Evento</label>
             <div class="mt-2">
