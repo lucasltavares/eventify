@@ -1,7 +1,10 @@
 <template>
   <AuthLayout>
-    <h2 class="text-2xl font-bold text-gray-900 text-center">Bem-vindo de volta</h2>
-    <p class="mt-2 text-sm text-gray-500 text-center">Entre para gerenciar seus eventos</p>
+    <div class="text-center">
+      <div class="section-kicker">Access your workspace</div>
+      <h2 class="mt-4 text-3xl font-semibold text-gray-900">Bem-vindo de volta</h2>
+      <p class="mt-2 text-sm text-gray-500">Entre para gerenciar seus eventos com estilo e clareza.</p>
+    </div>
 
     <form @submit.prevent="form.post('/login')" class="mt-8 space-y-5">
       <div>
@@ -31,8 +34,8 @@
       </div>
 
       <div class="flex items-center justify-between">
-        <label class="flex items-center gap-2">
-          <input v-model="form.remember" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-primary-500 focus:ring-primary-500" />
+        <label class="flex items-center gap-2 text-sm text-gray-600">
+          <input v-model="form.remember" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-primary-500 focus:ring-primary-500" />
           <span class="text-sm text-gray-600">Lembrar-me</span>
         </label>
       </div>

@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen gradient-bg">
-    <div class="max-w-4xl mx-auto px-4 py-8">
+  <div class="page-container gradient-bg">
+    <div class="public-shell">
       <div v-if="$page.props.flash?.success" class="mb-8">
-        <div class="card p-6 bg-success-50 border-success-200 animate-scale-in">
+        <div class="card animate-scale-in border-success-200 bg-success-50 p-6">
           <div class="flex items-center gap-4">
             <div class="w-12 h-12 rounded-full bg-success-100 flex items-center justify-center">
               <svg class="w-6 h-6 text-success-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -17,12 +17,12 @@
         </div>
       </div>
 
-      <div class="card overflow-hidden shadow-xl animate-fade-in">
-        <div class="relative h-48" :style="event.cover_image ? { backgroundImage: `url(/storage/${event.cover_image})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}" :class="event.cover_image ? '' : 'bg-gradient-to-br from-primary-500 via-pink-500 to-cyan-400'">
-          <div class="absolute inset-0 bg-black/20"></div>
+      <div class="public-card animate-fade-in shadow-xl">
+        <div class="relative h-64" :style="event.cover_image ? { backgroundImage: `url(/storage/${event.cover_image})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}" :class="event.cover_image ? '' : 'bg-gradient-to-br from-primary-500 via-primary-300 to-cyan-400'">
+          <div class="absolute inset-0 bg-gray-900/20"></div>
           <div class="absolute inset-0 flex items-center justify-center" v-if="!event.cover_image">
             <div class="text-center text-white">
-              <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center">
+              <div class="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-[24px] bg-white/20 backdrop-blur">
                 <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                 </svg>
@@ -34,12 +34,13 @@
 
         <div class="p-8">
           <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ event.title }}</h1>
-            <p class="text-gray-500">Você foi convidado para este evento especial</p>
+            <div class="section-kicker">You are invited</div>
+            <h1 class="mt-4 text-4xl font-semibold text-gray-900">{{ event.title }}</h1>
+            <p class="mt-3 text-gray-500">Voce foi convidado para este evento especial.</p>
           </div>
 
-          <div class="grid md:grid-cols-2 gap-6 mb-8">
-            <div class="card p-4 bg-gray-50 border-0">
+          <div class="mb-8 grid gap-6 md:grid-cols-2">
+            <div class="card border-0 bg-gray-50 p-4">
               <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-primary-100 flex items-center justify-center">
                   <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,7 +54,7 @@
               </div>
             </div>
 
-            <div v-if="event.event_time" class="card p-4 bg-gray-50 border-0">
+            <div v-if="event.event_time" class="card border-0 bg-gray-50 p-4">
               <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-pink-100 flex items-center justify-center">
                   <svg class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,7 +68,7 @@
               </div>
             </div>
 
-            <div v-if="event.location" class="card p-4 bg-gray-50 border-0 md:col-span-2">
+            <div v-if="event.location" class="card border-0 bg-gray-50 p-4 md:col-span-2">
               <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-cyan-100 flex items-center justify-center">
                   <svg class="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,13 +84,13 @@
             </div>
           </div>
 
-          <div v-if="event.description" class="mb-8 p-6 bg-gray-50 rounded-xl">
+          <div v-if="event.description" class="mb-8 rounded-[24px] bg-gray-50 p-6">
             <h3 class="font-semibold text-gray-900 mb-2">Sobre o evento</h3>
             <p class="text-gray-600">{{ event.description }}</p>
           </div>
 
           <div class="border-t border-gray-100 pt-8">
-            <h2 class="text-xl font-bold text-gray-900 text-center mb-6">
+            <h2 class="mb-6 text-center text-2xl font-bold text-gray-900">
               Confirmar Presença
             </h2>
 
@@ -170,7 +171,7 @@
 
       <div class="mt-8 text-center">
         <p class="text-sm text-gray-400">
-          Feito com 
+          Feito com
           <span class="gradient-text font-semibold">Eventify</span>
         </p>
       </div>

@@ -1,6 +1,6 @@
 <template>
   <DashboardLayout title="Detalhes do Evento">
-    <div class="max-w-4xl">
+    <div class="mx-auto max-w-6xl">
       <div class="mb-6">
         <Link href="/events" class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -10,17 +10,37 @@
         </Link>
       </div>
 
+      <div class="mb-6 panel overflow-hidden">
+        <div
+          class="relative h-64 bg-gradient-to-br from-primary-100 via-primary-50 to-cyan-100"
+          :style="event.cover_image ? { backgroundImage: `url(/storage/${event.cover_image})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}"
+        >
+          <div class="absolute inset-0 bg-gray-900/20"></div>
+          <div class="absolute inset-x-0 bottom-0 p-8">
+            <div class="max-w-3xl rounded-[28px] bg-white/78 p-6 backdrop-blur-xl">
+              <div class="flex flex-wrap items-center gap-3">
+                <span class="badge badge-primary">{{ formatFullDate(event.event_date) }}</span>
+                <span v-if="event.event_time" class="badge badge-warning">{{ event.event_time }}</span>
+                <span v-if="event.location" class="badge badge-success">{{ event.location }}</span>
+              </div>
+              <h1 class="mt-4 text-4xl font-semibold text-gray-900">{{ event.title }}</h1>
+              <p class="mt-3 text-sm text-gray-600">Gerencie detalhes, convidados e distribuicao do link publico.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="grid gap-6 lg:grid-cols-3">
         <div class="lg:col-span-2 space-y-6">
           <div class="card p-6">
-            <div class="flex items-start justify-between mb-4">
+            <div class="mb-4 flex items-start justify-between">
               <div class="flex items-center gap-4">
-                <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-primary-100 to-pink-100 flex flex-col items-center justify-center">
+                <div class="flex h-16 w-16 flex-col items-center justify-center rounded-[22px] bg-gradient-to-br from-primary-100 to-pink-100">
                   <span class="text-xs font-medium text-primary-600">{{ formatMonth(event.event_date) }}</span>
                   <span class="text-2xl font-bold text-primary-700">{{ formatDay(event.event_date) }}</span>
                 </div>
                 <div>
-                  <h1 class="text-2xl font-bold text-gray-900">{{ event.title }}</h1>
+                  <h2 class="text-2xl font-bold text-gray-900">{{ event.title }}</h2>
                   <p class="text-gray-500">{{ formatFullDate(event.event_date) }}</p>
                 </div>
               </div>
@@ -59,7 +79,7 @@
           </div>
 
           <div class="card">
-            <div class="p-4 border-b border-gray-100 flex items-center justify-between">
+            <div class="flex items-center justify-between border-b border-gray-100 p-4">
               <h2 class="font-semibold text-gray-900">Compartilhar evento</h2>
             </div>
             <div class="p-4 space-y-4">
@@ -108,7 +128,7 @@
 
         <div class="space-y-6">
           <div class="card p-6">
-            <h2 class="font-semibold text-gray-900 mb-4">Estatísticas</h2>
+            <h2 class="mb-4 font-semibold text-gray-900">Estatisticas</h2>
             <div class="space-y-4">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2 text-gray-600">
@@ -124,7 +144,7 @@
                   <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
                   </svg>
-                  Total de guests
+                  Total de convidados
                 </div>
                 <span class="font-semibold text-gray-900">{{ totalGuests }}</span>
               </div>
@@ -206,7 +226,7 @@ function copyLink() {
 }
 
 function shareWhatsApp() {
-  const text = encodeURIComponent(`Confa حضورك في ${props.event.title}!\n${eventPublicUrl.value}`);
+  const text = encodeURIComponent(`Confirme sua presenca em ${props.event.title}.\n${eventPublicUrl.value}`);
   window.open(`https://wa.me/?text=${text}`, '_blank');
 }
 
@@ -216,7 +236,7 @@ function shareFacebook() {
 }
 
 function shareTwitter() {
-  const text = encodeURIComponent(`Confa حضورك في ${props.event.title}!`);
+  const text = encodeURIComponent(`Confirme sua presenca em ${props.event.title}.`);
   const url = encodeURIComponent(eventPublicUrl.value);
   window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
 }
@@ -225,7 +245,7 @@ function shareNative() {
   if (navigator.share) {
     navigator.share({
       title: props.event.title,
-      text: `Confa حضورك في ${props.event.title}!`,
+      text: `Confirme sua presenca em ${props.event.title}.`,
       url: eventPublicUrl.value,
     });
   } else {
@@ -244,6 +264,6 @@ function handleDelete() {
 
 <style scoped>
 .share-btn {
-  @apply w-10 h-10 rounded-xl bg-gray-100 text-gray-600 flex items-center justify-center hover:bg-gray-200 transition-colors;
+  @apply flex h-11 w-11 items-center justify-center rounded-[16px] bg-primary-50 text-primary-700 transition hover:bg-primary-100;
 }
 </style>

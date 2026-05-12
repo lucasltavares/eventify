@@ -1,9 +1,10 @@
 <template>
   <DashboardLayout title="Meus Eventos">
-    <div class="flex items-center justify-between mb-6">
+    <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">Meus Eventos</h1>
-        <p class="mt-1 text-gray-500">Gerencie todos os seus eventos</p>
+        <div class="section-kicker">Events library</div>
+        <h1 class="mt-4 text-4xl font-semibold text-gray-900">Meus eventos</h1>
+        <p class="mt-2 text-gray-500">Gerencie convites, acompanhe lotacao e compartilhe paginas publicas.</p>
       </div>
       <Link href="/events/create" class="btn-primary btn-md">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -13,16 +14,16 @@
       </Link>
     </div>
 
-    <div v-if="events.data.length > 0" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div v-if="events.data.length > 0" class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
       <div
         v-for="(event, index) in events.data"
         :key="event.id"
         class="event-card animate-fade-in overflow-hidden"
         :style="{ animationDelay: `${index * 50}ms` }"
       >
-        <div v-if="event.cover_image" class="h-32 -mx-4 -mt-4 mb-3 bg-cover bg-center" :style="{ backgroundImage: `url(/storage/${event.cover_image})` }"></div>
-        <div v-else class="flex items-start justify-between mb-4">
-          <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-primary-100 to-pink-100 flex flex-col items-center justify-center">
+        <div v-if="event.cover_image" class="mb-5 h-40 rounded-[24px] bg-cover bg-center" :style="{ backgroundImage: `url(/storage/${event.cover_image})` }"></div>
+        <div v-else class="mb-4 flex items-start justify-between">
+          <div class="flex h-14 w-14 flex-col items-center justify-center rounded-[20px] bg-gradient-to-br from-primary-100 to-pink-100">
             <span class="text-xs font-medium text-primary-600">{{ formatMonth(event.event_date) }}</span>
             <span class="text-xl font-bold text-primary-700">{{ formatDay(event.event_date) }}</span>
           </div>
@@ -34,7 +35,16 @@
           </span>
         </div>
 
-        <h3 class="event-title">{{ event.title }}</h3>
+        <div class="flex items-start justify-between gap-4">
+          <h3 class="event-title mt-0">{{ event.title }}</h3>
+          <span
+            v-if="event.cover_image"
+            class="badge"
+            :class="isUpcoming(event.event_date) ? 'badge-success' : 'badge-primary'"
+          >
+            {{ isUpcoming(event.event_date) ? 'Proximo' : 'Realizado' }}
+          </span>
+        </div>
         
         <div v-if="event.location" class="event-location">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,13 +93,13 @@
       </div>
     </div>
 
-    <div v-if="events.last_page > 1" class="mt-6 flex justify-center gap-2">
+    <div v-if="events.last_page > 1" class="mt-8 flex justify-center gap-2">
       <Link
         v-for="link in events.links"
         :key="link.label"
         :href="link.url || '#'"
-        class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-        :class="link.active ? 'bg-primary-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'"
+        class="rounded-full px-4 py-2 text-sm font-medium transition-colors"
+        :class="link.active ? 'bg-gray-900 text-white' : 'bg-white/80 text-gray-600 hover:bg-primary-50'"
         :disabled="!link.url"
       >
         <span v-html="link.label"></span>

@@ -1,7 +1,10 @@
 <template>
   <AuthLayout>
-    <h2 class="text-2xl font-bold text-gray-900 text-center">Criar sua conta</h2>
-    <p class="mt-2 text-sm text-gray-500 text-center">Comece a criar eventos incríveis hoje</p>
+    <div class="text-center">
+      <div class="section-kicker">Start your studio</div>
+      <h2 class="mt-4 text-3xl font-semibold text-gray-900">Criar sua conta</h2>
+      <p class="mt-2 text-sm text-gray-500">Comece hoje a publicar eventos com uma experiencia mais refinada.</p>
+    </div>
 
     <form @submit.prevent="form.post('/register')" class="mt-8 space-y-5">
       <div>
