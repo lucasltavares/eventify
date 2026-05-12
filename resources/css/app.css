@@ -177,7 +177,7 @@
   }
 
   .section-kicker {
-    @apply inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white/80 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.24em] text-primary-700;
+    @apply inline-flex items-center gap-2 rounded-full border border-pink-100 bg-white/85 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.24em] text-cyan-600 shadow-sm;
   }
 
   .section-title {
