@@ -1,5 +1,7 @@
 <template>
   <div class="page-container">
+    <Head :title="pageTitle" />
+
     <div class="marketing-shell">
       <header class="marketing-hero mb-8">
         <div class="relative z-10 flex flex-col gap-8">
@@ -32,5 +34,15 @@
 </template>
 
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { Head, Link } from '@inertiajs/vue3';
+
+const props = defineProps({
+  title: {
+    type: String,
+    default: 'Convites Digitais',
+  },
+});
+
+const pageTitle = computed(() => props.title || 'Convites Digitais');
 </script>

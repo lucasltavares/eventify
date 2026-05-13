@@ -1,5 +1,7 @@
 <template>
   <div class="page-container gradient-bg">
+    <Head :title="event.title" />
+
     <div class="public-shell">
       <div v-if="$page.props.flash?.success" class="mb-8">
         <div class="card animate-scale-in border-success-200 bg-success-50 p-6">
@@ -12,6 +14,22 @@
             <div>
               <h3 class="font-semibold text-success-800">Presença confirmada!</h3>
               <p class="text-sm text-success-600">Obrigado por confirmar. Te vemos no evento!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="$page.props.errors?.event" class="mb-8">
+        <div class="card border-error-200 bg-error-50 p-6">
+          <div class="flex items-center gap-4">
+            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-error-100">
+              <svg class="h-6 w-6 text-error-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-error-800">Confirmações encerradas</h3>
+              <p class="text-sm text-error-600">{{ $page.props.errors.event }}</p>
             </div>
           </div>
         </div>
@@ -91,10 +109,20 @@
 
           <div class="border-t border-gray-100 pt-8">
             <h2 class="mb-6 text-center text-2xl font-bold text-gray-900">
-              Confirmar Presença
+              {{ isFinished ? 'Confirmações encerradas' : 'Confirmar Presença' }}
             </h2>
 
-            <form @submit.prevent="submitRsvp" class="max-w-lg mx-auto space-y-5">
+            <div v-if="isFinished" class="mx-auto max-w-lg rounded-[24px] bg-gray-50 p-6 text-center">
+              <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gray-200 text-gray-600">
+                <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </div>
+              <p class="font-semibold text-gray-900">Este evento já foi finalizado.</p>
+              <p class="mt-2 text-sm text-gray-500">Novos participantes não podem mais confirmar presença por este link.</p>
+            </div>
+
+            <form v-else @submit.prevent="submitRsvp" class="max-w-lg mx-auto space-y-5">
               <div>
                 <label class="label">Seu Nome *</label>
                 <input
@@ -169,6 +197,86 @@
         </div>
       </div>
 
+      <div v-if="event.photos?.length" class="mt-8 space-y-6">
+        <div class="text-center">
+          <div class="section-kicker">Galeria do evento</div>
+          <h2 class="mt-3 text-3xl font-semibold text-gray-900">Reviva os momentos favoritos</h2>
+          <p class="mt-3 text-sm text-gray-500">
+            Veja as fotos publicadas pelo organizador, marque suas favoritas e deixe um comentário em cada registro.
+          </p>
+        </div>
+
+        <div class="grid gap-6 lg:grid-cols-2">
+          <article
+            v-for="photo in event.photos"
+            :key="photo.id"
+            class="overflow-hidden rounded-[30px] border border-white/60 bg-white/90 shadow-xl shadow-cyan-950/5"
+          >
+            <img :src="photo.image_url" :alt="`${event.title} photo ${photo.id}`" class="h-80 w-full object-cover" />
+
+            <div class="space-y-5 p-6">
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3 text-sm text-gray-500">
+                  <span>{{ photo.upvotes_count }} curtidas</span>
+                  <span>{{ photo.comments_count }} comentários</span>
+                </div>
+
+                <button
+                  @click="upvotePhoto(photo.id)"
+                  :disabled="isPhotoUpvoted(photo.id)"
+                  :class="isPhotoUpvoted(photo.id) ? 'btn-primary btn-sm opacity-70' : 'btn-ghost btn-sm'"
+                >
+                  {{ isPhotoUpvoted(photo.id) ? 'Você curtiu' : 'Curtir foto' }}
+                </button>
+              </div>
+
+              <div v-if="photo.comments?.length" class="space-y-3">
+                <div
+                  v-for="comment in photo.comments"
+                  :key="comment.id"
+                  class="rounded-[20px] bg-gray-50 p-4"
+                >
+                  <div class="flex items-center justify-between gap-3">
+                    <p class="text-sm font-semibold text-gray-900">{{ comment.author_name }}</p>
+                    <p class="text-xs uppercase tracking-[0.14em] text-gray-400">{{ formatCommentDate(comment.created_at) }}</p>
+                  </div>
+                  <p class="mt-2 text-sm leading-6 text-gray-600">{{ comment.comment }}</p>
+                </div>
+              </div>
+
+              <div v-else class="rounded-[20px] bg-gray-50 p-4 text-sm text-gray-500">
+                Ainda não há comentários nesta foto.
+              </div>
+
+              <form @submit.prevent="submitComment(photo.id)" class="grid gap-3">
+                <div>
+                  <label class="label">Seu nome</label>
+                  <input
+                    v-model="commentForms[photo.id].author_name"
+                    type="text"
+                    class="input"
+                    placeholder="Como você quer aparecer?"
+                  />
+                </div>
+
+                <div>
+                  <label class="label">Comentário</label>
+                  <textarea
+                    v-model="commentForms[photo.id].comment"
+                    class="input min-h-[100px]"
+                    placeholder="Conte o que essa foto te lembra."
+                  ></textarea>
+                </div>
+
+                <button type="submit" class="btn-primary btn-md justify-center">
+                  Publicar comentário
+                </button>
+              </form>
+            </div>
+          </article>
+        </div>
+      </div>
+
       <div class="mt-8 text-center">
         <p class="text-sm text-gray-400">
           Feito com
@@ -180,12 +288,14 @@
 </template>
 
 <script setup>
-import { useForm } from '@inertiajs/vue3';
+import { computed, reactive } from 'vue';
+import { Head, router, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
   event: Object,
   rsvps: Array,
   stats: Object,
+  upvotedPhotoIds: Array,
 });
 
 const form = useForm({
@@ -196,13 +306,54 @@ const form = useForm({
   message: '',
 });
 
+const isFinished = computed(() => props.event.status === 'finished');
+const upvotedPhotoIds = computed(() => props.upvotedPhotoIds || []);
+const commentForms = reactive(
+  Object.fromEntries(
+    (props.event.photos || []).map((photo) => [photo.id, { author_name: '', comment: '' }]),
+  ),
+);
+
 function formatFullDate(date) {
   return new Date(date).toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 function submitRsvp() {
+  if (isFinished.value) {
+    return;
+  }
+
   form.post(`/e/${props.event.slug}/rsvp`, {
     preserveScroll: true,
+  });
+}
+
+function isPhotoUpvoted(photoId) {
+  return upvotedPhotoIds.value.includes(photoId);
+}
+
+function upvotePhoto(photoId) {
+  router.post(`/e/${props.event.slug}/photos/${photoId}/upvote`, {}, {
+    preserveScroll: true,
+  });
+}
+
+function submitComment(photoId) {
+  router.post(`/e/${props.event.slug}/photos/${photoId}/comments`, commentForms[photoId], {
+    preserveScroll: true,
+    onSuccess: () => {
+      commentForms[photoId] = {
+        author_name: '',
+        comment: '',
+      };
+    },
+  });
+}
+
+function formatCommentDate(date) {
+  return new Date(date).toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: 'short',
   });
 }
 </script>

@@ -13,6 +13,8 @@ class EventController extends Controller
 {
     public function index(): Response
     {
+        Event::syncStatuses();
+
         $events = Auth::user()->events()
             ->withCount(['rsvps as confirmed_rsvps_count' => function ($query) {
                 $query->where('status', 'confirmed');
@@ -56,12 +58,55 @@ class EventController extends Controller
             abort(403);
         }
 
-        $event->load(['rsvps' => function ($query) {
-            $query->where('status', 'confirmed')->orderBy('created_at', 'desc');
-        }]);
+        Event::syncStatuses();
+        $event->refresh();
+
+        $event->load([
+            'rsvps' => function ($query) {
+                $query->where('status', 'confirmed')->orderBy('created_at', 'desc');
+            },
+            'photos' => function ($query) {
+                $query
+                    ->withCount(['upvotes', 'comments'])
+                    ->with('comments');
+            },
+        ]);
+
+        $questionsQuery = $event->questions()->with('rsvp');
+        $feedbacksQuery = $event->feedbacks()->with('rsvp')->orderByDesc('created_at');
+
+        $questions = $questionsQuery
+            ->paginate(6, ['*'], 'questions_page')
+            ->withQueryString();
+
+        $feedbacks = $feedbacksQuery
+            ->paginate(6, ['*'], 'feedback_page')
+            ->withQueryString();
+
+        $questionMetrics = [
+            'total' => $event->questions()->count(),
+            'pending' => $event->questions()->whereNull('answer')->count(),
+            'answered' => $event->questions()->whereNotNull('answer')->count(),
+        ];
+
+        $feedbackMetrics = [
+            'total' => $event->feedbacks()->count(),
+            'responded' => $event->feedbacks()->whereNotNull('submitted_at')->count(),
+            'emailed' => $event->feedbacks()->whereNotNull('invitation_sent_at')->count(),
+            'average_rating' => round((float) ($event->feedbacks()->whereNotNull('overall_rating')->avg('overall_rating') ?? 0), 1),
+            'recommendation_rate' => (int) round(
+                $event->feedbacks()->whereNotNull('submitted_at')->count() > 0
+                    ? ($event->feedbacks()->where('would_recommend', true)->count() / $event->feedbacks()->whereNotNull('submitted_at')->count()) * 100
+                    : 0
+            ),
+        ];
 
         return Inertia::render('Events/Show', [
             'event' => $event,
+            'questions' => $questions,
+            'feedbacks' => $feedbacks,
+            'questionMetrics' => $questionMetrics,
+            'feedbackMetrics' => $feedbackMetrics,
         ]);
     }
 
@@ -70,6 +115,9 @@ class EventController extends Controller
         if ($event->user_id !== Auth::id()) {
             abort(403);
         }
+
+        Event::syncStatuses();
+        $event->refresh();
 
         return Inertia::render('Events/Edit', [
             'event' => $event,

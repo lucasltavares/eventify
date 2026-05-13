@@ -1,5 +1,7 @@
 <template>
   <div class="page-container gradient-bg">
+    <Head :title="pageTitle" />
+
     <div class="auth-shell">
       <section class="space-y-8 animate-fade-in">
         <div class="section-kicker">Event design studio</div>
@@ -52,4 +54,15 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
+import { Head } from '@inertiajs/vue3';
+
+const props = defineProps({
+  title: {
+    type: String,
+    default: 'Acessar Conta',
+  },
+});
+
+const pageTitle = computed(() => props.title || 'Acessar Conta');
 </script>

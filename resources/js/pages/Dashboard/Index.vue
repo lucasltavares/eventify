@@ -95,6 +95,11 @@
             <p class="truncate text-sm text-gray-500">{{ event.location || 'Local a definir' }}</p>
           </div>
           <div class="text-right">
+            <div class="mb-2">
+              <span :class="event.status === 'finished' ? 'badge badge-primary' : 'badge badge-success'">
+                {{ event.status === 'finished' ? 'Finalizado' : 'Próximo' }}
+              </span>
+            </div>
             <div class="flex items-center gap-1 text-sm">
               <svg class="w-4 h-4 text-success-500" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>

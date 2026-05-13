@@ -4,6 +4,7 @@ import { ZiggyVue } from 'ziggy-js';
 import '../css/app.css';
 
 createInertiaApp({
+  title: (title) => (title ? `${title} - Eventify` : 'Eventify'),
   resolve: (name) => {
     const pages = import.meta.glob('./pages/**/*.vue', { eager: true });
     return pages[`./pages/${name}.vue`];

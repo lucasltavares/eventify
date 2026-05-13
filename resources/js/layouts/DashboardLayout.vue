@@ -1,5 +1,7 @@
 <template>
   <div class="page-container">
+    <Head :title="pageTitle" />
+
     <aside class="sidebar" :class="{ 'open': sidebarOpen }">
       <div class="border-b border-white/10 px-4 pb-5">
         <div class="flex items-center gap-3">
@@ -95,7 +97,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { Link, usePage } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
 
 const props = defineProps({
   title: String,

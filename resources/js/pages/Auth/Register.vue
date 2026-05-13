@@ -1,5 +1,5 @@
 <template>
-  <AuthLayout>
+  <AuthLayout title="Criar Conta">
     <div class="text-center">
       <div class="section-kicker">Start your studio</div>
       <h2 class="mt-4 text-3xl font-semibold text-gray-900">Criar sua conta</h2>

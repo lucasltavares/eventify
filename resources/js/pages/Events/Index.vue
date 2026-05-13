@@ -29,9 +29,9 @@
           </div>
           <span
             class="badge"
-            :class="isUpcoming(event.event_date) ? 'badge-success' : 'badge-primary'"
+            :class="event.status === 'finished' ? 'badge-primary' : 'badge-success'"
           >
-            {{ isUpcoming(event.event_date) ? 'Próximo' : 'Realizado' }}
+            {{ event.status === 'finished' ? 'Finalizado' : 'Próximo' }}
           </span>
         </div>
 
@@ -40,9 +40,9 @@
           <span
             v-if="event.cover_image"
             class="badge"
-            :class="isUpcoming(event.event_date) ? 'badge-success' : 'badge-primary'"
+            :class="event.status === 'finished' ? 'badge-primary' : 'badge-success'"
           >
-            {{ isUpcoming(event.event_date) ? 'Proximo' : 'Realizado' }}
+            {{ event.status === 'finished' ? 'Finalizado' : 'Próximo' }}
           </span>
         </div>
         
@@ -123,10 +123,6 @@ function formatMonth(date) {
 
 function formatDay(date) {
   return new Date(date).getDate();
-}
-
-function isUpcoming(date) {
-  return new Date(date) >= new Date(new Date().setHours(0, 0, 0, 0));
 }
 
 function copyLink(slug) {

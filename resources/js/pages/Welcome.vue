@@ -1,5 +1,5 @@
 <template>
-  <GuestLayout>
+  <GuestLayout title="Convites Digitais">
     <section class="relative z-10 grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
       <div class="space-y-8">
         <div class="section-kicker">Create events that feel considered</div>

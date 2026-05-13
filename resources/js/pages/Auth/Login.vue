@@ -1,5 +1,5 @@
 <template>
-  <AuthLayout>
+  <AuthLayout title="Entrar">
     <div class="text-center">
       <div class="inline-flex items-center gap-2 rounded-full border border-pink-100 bg-pink-50/80 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.24em] text-cyan-600 shadow-sm">
         Access your workspace
